@@ -15,3 +15,7 @@ Broadcast::channel('order.{user_id}', function (User $user, $user_id){
 Broadcast::channel('whiteboard', function () {
    return true;
 });
+
+Broadcast::channel('room', function(User $user){
+    return $user->only('name');
+});
