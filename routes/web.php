@@ -49,6 +49,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dragNdrop', function () {
+    return view('dragNdrop');
+});
+
 Route::get('/dashboard', function () {
     $orders = Auth::user()->orders()->get();
     return view('dashboard', ['orders' => $orders]);

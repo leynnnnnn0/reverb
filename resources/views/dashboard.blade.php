@@ -4,6 +4,35 @@
             {{ __('Dashboard') . ' ' . Auth::user()->name }}
         </h2>
     </x-slot>
+    <div x-data="{
+    time: '0 seconds',
+    startingTime: 0,
+    previousStartingTime: 0,
+    init() {
+        this.previousStartingTime = localStorage.getItem('previousStartingTime');
+        this.startingTime = this.previousStartingTime ? parseInt(this.previousStartingTime) : Date.now();
+        if (!this.previousStartingTime) {
+            localStorage.setItem('previousStartingTime', this.startingTime);
+        }
+        this.updateTime();
+        setInterval(() => this.updateTime(), 1000);
+    },
+    updateTime() {
+        const timeDifference = Date.now() - this.startingTime;
+        const seconds = Math.floor(timeDifference / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        this.time = `${hours} hours, ${minutes % 60} minutes, ${seconds % 60} seconds`;
+    },
+    resetTimer() {
+        this.startingTime = Date.now();
+        localStorage.setItem('previousStartingTime', this.startingTime);
+        this.updateTime();
+    }
+}" x-init="init" class="container">
+        <p x-text="time"></p>
+        <button @click="resetTimer">Reset Timer</button>
+    </div>
     <div
         x-data="{ users: ['test', 'test1']}"
         x-init="
@@ -46,21 +75,6 @@
                 </span>
                     </strong>
                 </div>
-{{--                <div x-data="{usersList: []}"--}}
-{{--                     x-init="--}}
-{{--                        Echo.join('room')--}}
-{{--                        .here(users => {--}}
-{{--                            usersList = users--}}
-{{--                        })--}}
-{{--                        .joining(user => {--}}
-{{--                            console.log(user.name + ' has joined')--}}
-{{--                        })--}}
-{{--                     "--}}
-{{--                     class="container">--}}
-{{--                    <template x-for="user in usersList">--}}
-{{--                        <p class="text-lg text-green-500 font-bold" x-text="user.name"></p>--}}
-{{--                    </template>--}}
-{{--                </div>--}}
             @endforeach
                 <div x-data="{users: ['data']}"
                     x-init="
@@ -89,3 +103,72 @@
         </div>
         </div>
 </x-app-layout>
+
+<script>
+    // // The user open the application and I want to know how long that application is already running
+    // // First we need to get the starting time
+    // let startingTime = Date.now();
+    // // Second we need to set the starting time to our local storage so even the user refresh the page it won't reset
+    // let previousStartingTime = localStorage.getItem('previousStartingTime');
+    // if(!previousStartingTime) {
+    //     localStorage.setItem('previousStartingTime', startingTime);
+    // }else {
+    //     startingTime = previousStartingTime;
+    // }
+    // let timeDifference = Date.now() - startingTime;
+    //
+    // let seconds = Math.floor(timeDifference / 1000);
+    // let minutes = Math.floor(seconds / 60);
+    // let hours = Math.floor(minutes / 60);
+    //
+    // let time =`Elapsed time: ${hours} hours, ${minutes % 60} minutes, ${seconds % 60} seconds`;
+    // setInterval(() => {
+    //     document.getElementById('time').innerText = time;
+    // },1000)
+
+
+    // Third we need to display the time
+    // let count = 0;localStorage.
+    // setInterval(() => {
+    //     // Goal is to get the previous count when the page is refreshed
+    //
+    //     // If count is zero check if previousCount is set and if it is set the change the value of count to previousCount
+    //     let previousCount = localStorage.getItem('previousCount')
+    //     if(count === 0 && previousCount)
+    //     {
+    //         count = previousCount;
+    //     }
+    //     count++;
+    //     localStorage.setItem('previousCount', count)
+    //     console.log(Date.now())
+    //
+    // },1000)
+    // // Function to get the stored end time or set a new one
+    // function getEndTime() {
+    //     let endTime = localStorage.getItem('timerEndTime');
+    //     if (!endTime) {
+    //         endTime = Date.now() + 60000; // Set timer for 1 minute (60000 ms)
+    //         localStorage.setItem('timerEndTime', endTime);
+    //     }
+    //     return parseInt(endTime);
+    // }
+    //
+    // // Function to update the timer
+    // function updateTimer() {
+    //     const endTime = getEndTime();
+    //     const currentTime = Date.now();
+    //     const remainingTime = endTime - currentTime;
+    //
+    //     if (remainingTime <= 0) {
+    //         console.log("Time's up!");
+    //         localStorage.removeItem('timerEndTime');
+    //     } else {
+    //         const seconds = Math.ceil(remainingTime / 1000);
+    //         console.log(`${seconds} seconds remaining`);
+    //         setTimeout(updateTimer, 1000);
+    //     }
+    // }
+    //
+    // // Start the timer
+    // updateTimer();
+</script>

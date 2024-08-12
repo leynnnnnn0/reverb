@@ -31,6 +31,7 @@ class WhiteBoard
     {
         return [
             new Channel('whiteboard'),
+            new Channel('drag-and-drop')
         ];
     }
 }

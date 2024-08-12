@@ -16,6 +16,10 @@ Broadcast::channel('whiteboard', function () {
    return true;
 });
 
+Broadcast::channel('drag-and-drop', function () {
+    return true;
+});
+
 Broadcast::channel('room', function(User $user){
     return $user->only('name');
 });
